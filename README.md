@@ -97,6 +97,10 @@ same person twice is refused.
 |---|---|
 | ![The dose card with a quantity of 2](docs/images/card-quantity.png) | ![The dose card after Guava accepted the dose](docs/images/card-confirmed.png) |
 
+The same dose in Guava's web app, with the quantity and time from Home Assistant:
+
+![The logged dose open in Guava's web app](docs/images/guava-web-entry.png)
+
 ```yaml
 type: custom:guava-dose-card
 entity: button.guava_sam_log_paracetamol
@@ -118,7 +122,7 @@ icon: mdi:pill          # optional
 | Live consent, token exchange and medication list through this integration | Tested on Home Assistant 2026.11.0 |
 | Dose write through this integration | Tested on live through the action, for a holder and a dependent: the new medication appeared in Guava's list |
 | Pressing a button on a real install | Tested on live: Guava accepted the dose |
-| Dose card | Rendered on Home Assistant 2026.11.0, with the tick, error and stepper tried against a stubbed call. **A real quantity above 1 is not tested yet** |
+| Dose card | Tested on live with Home Assistant 2026.11.0: a quantity of 2 appeared correctly in Guava's web app. The refused-dose message was only tried against a stubbed call |
 | Loading on a real install | Tested on Home Assistant 2026.11.0: loads, and the setup form opens |
 | HACS validation | Passes as a custom repository; the brands check is skipped, so it isn't ready for the default store |
 
