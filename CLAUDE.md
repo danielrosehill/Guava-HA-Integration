@@ -4,7 +4,7 @@ Public, unofficial Home Assistant custom integration (`custom_components/guava_h
 doses to Guava Health. Not a Guava product: keep the notice at the top of README.md, and never word
 anything as if Guava made, endorses or supports it. Installable through HACS as a custom repository (`hacs.json`); not in the default store (2026-11-07).
 
-Release tier: small (`v1.0`, `v1.1`, ...). Keep `manifest.json` `version` and `USER_AGENT` in `const.py` in step.
+Release tier: small (`v1.0`, `v1.1`, ...). Keep `manifest.json` `version` and `VERSION` in `const.py` in step; `VERSION` also busts the card's browser cache.
 
 ## Hard rules
 
@@ -25,6 +25,8 @@ Release tier: small (`v1.0`, `v1.1`, ...). Keep `manifest.json` `version` and `U
 - Reauth waits on a confirm step before calling PAR, because the consent link dies after 600 seconds
   and a reauth flow can sit unopened for hours.
 - `api.py` has no Home Assistant imports.
+- Quantity is chosen on the card, starting at 1. Guava's dose text is free text, mostly strength (`20mg`), so it must never be parsed into a quantity (checked on live 2026-11-07).
+- `guava-dose-card` ships inside the integration, so it works without HACS. It calls `guava_health.log_dose` and waits for the call, so its tick means Guava accepted the dose. Don't make it fire and forget.
 
 ## Test
 

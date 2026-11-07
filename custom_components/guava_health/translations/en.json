@@ -53,6 +53,16 @@
     }
   },
   "services": {
+    "log_dose": {
+      "name": "Log dose",
+      "description": "Logs a dose of the medication behind a Guava button. Only the Guava app can delete it.",
+      "fields": {
+        "quantity": {
+          "name": "Quantity",
+          "description": "How many to log."
+        }
+      }
+    },
     "log_medication": {
       "name": "Log medication",
       "description": "Logs a dose to Guava. Only the Guava app can delete it.",

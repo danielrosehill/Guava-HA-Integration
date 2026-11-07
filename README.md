@@ -14,9 +14,17 @@ Dose logging is the point. It does not import health data into Home Assistant.
 ## What you get
 
 - **Buttons:** `button.guava_<person>_log_<medication>`, one per medication you choose. Each press
-  logs one dose at the current time.
+  logs a quantity of 1 at the current time.
 - **Action:** `guava_health.log_medication` with `medication`, and optionally `config_entry_id`
   (required with more than one person), `quantity`, `notes`, `time`, `bypass_cooldown`, `allow_new`.
+- **Entity action:** `guava_health.log_dose` targets a button and takes a `quantity`. The button
+  already knows the person and the exact medication name, so automations don't need either.
+- **Dashboard card:** `custom:guava-dose-card`, installed with the integration. Each card has − and +
+  controls starting at 1, and a **Log** button below them. Once Guava accepts the dose, the card fades,
+  shows a tick and "Dose logged successfully", then resets to 1. If the dose is refused, for example
+  by the cooldown, it shows the reason and keeps the quantity.
+- **Attributes:** each button has `last_logged` and `last_quantity`, covering only doses Guava
+  accepted through this integration. The button's own state changes on every press, even a failed one.
 - **Event:** `guava_health_dose_logged` after Guava accepts a dose, for confirmation lights or
   announcements, since a Zigbee button gives no feedback of its own.
 
@@ -79,6 +87,15 @@ same person twice is refused.
   are saved in Home Assistant's `.storage` directory as soon as they change. If a grant dies, Home
   Assistant asks you to authorise again.
 
+## Dashboard card
+
+```yaml
+type: custom:guava-dose-card
+entity: button.guava_sam_log_paracetamol
+name: Log Paracetamol   # optional
+icon: mdi:pill          # optional
+```
+
 ## Examples
 
 - [Usage ideas](docs/usage-ideas.md): Zigbee remotes, NFC tags, voice.
@@ -93,6 +110,7 @@ same person twice is refused.
 | Live consent, token exchange and medication list through this integration | Tested on Home Assistant 2026.11.0 |
 | Dose write through this integration | Tested on live through the action, for a holder and a dependent: the new medication appeared in Guava's list |
 | Pressing a button on a real install | Tested on live: Guava accepted the dose |
+| Dose card | Rendered on Home Assistant 2026.11.0, with the tick, error and stepper tried against a stubbed call. **A real quantity above 1 is not tested yet** |
 | Loading on a real install | Tested on Home Assistant 2026.11.0: loads, and the setup form opens |
 | HACS validation | Passes as a custom repository; the brands check is skipped, so it isn't ready for the default store |
 

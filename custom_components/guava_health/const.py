@@ -1,6 +1,7 @@
 """Constants for the Guava Health integration."""
 
 DOMAIN = "guava_health"
+VERSION = "1.2"
 
 API_BASE = {
     "live": "https://api.guavahealth.com",
@@ -11,7 +12,8 @@ DEFAULT_REDIRECT_URI = "https://localhost:8765/callback"
 
 # Cloudflare answers 403 (error 1010) to default Python agents (tested 2026-11-03).
 USER_AGENT = (
-    "guava-ha-integration/1.1 (+https://github.com/danielrosehill/Guava-HA-Integration)"
+    f"guava-ha-integration/{VERSION} "
+    "(+https://github.com/danielrosehill/Guava-HA-Integration)"
 )
 
 # Only what the integration uses. The app may have more enabled; `profile` is added by
@@ -35,3 +37,5 @@ DEFAULT_COOLDOWN = 60
 
 EVENT_DOSE_LOGGED = "guava_health_dose_logged"
 SERVICE_LOG_MEDICATION = "log_medication"
+SERVICE_LOG_DOSE = "log_dose"
+CARD_URL = f"/{DOMAIN}/guava-dose-card.js"

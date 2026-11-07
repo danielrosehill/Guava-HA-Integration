@@ -2,6 +2,7 @@
 
 from datetime import datetime
 import json
+from pathlib import Path
 import time
 from urllib.parse import urlencode
 
@@ -13,7 +14,7 @@ from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import entity_registry as er
 
 from custom_components.guava_health.api import resolve_medication
-from custom_components.guava_health.const import DOMAIN
+from custom_components.guava_health.const import DOMAIN, VERSION
 
 from .conftest import BASE, ME, MEDS, token
 
@@ -109,6 +110,32 @@ async def test_button_logs_stored_name_then_cooldown_blocks(hass, aioclient_mock
     with pytest.raises(HomeAssistantError, match="cooldown"):
         await press(hass)
     assert len(writes(aioclient_mock)) == 1
+
+
+async def test_log_dose_passes_quantity_and_records_it(hass, aioclient_mock, entry):
+    api(aioclient_mock)
+    await load(hass, entry)
+    await hass.services.async_call(
+        DOMAIN, "log_dose", {"quantity": 2}, target={"entity_id": BUTTON}, blocking=True
+    )
+    await hass.async_block_till_done()
+    item = writes(aioclient_mock)[0]["entries"][0]
+    assert item["medication_name"] == "Paracetamol "
+    assert item["quantity"] == 2
+    attributes = hass.states.get(BUTTON).attributes
+    assert attributes["last_quantity"] == 2
+    assert attributes["last_logged"] == item["time"]
+
+
+async def test_failed_dose_is_not_recorded(hass, aioclient_mock, entry):
+    api(aioclient_mock, write={"accepted": 0})
+    await load(hass, entry)
+    with pytest.raises(HomeAssistantError, match="not confirmed"):
+        await hass.services.async_call(
+            DOMAIN, "log_dose", {"quantity": 2}, target={"entity_id": BUTTON}, blocking=True
+        )
+    await hass.async_block_till_done()
+    assert hass.states.get(BUTTON).attributes["last_logged"] is None
 
 
 async def test_failed_write_does_not_start_cooldown(hass, aioclient_mock, entry):
@@ -273,6 +300,17 @@ async def test_options_remove_button(hass, aioclient_mock, entry):
     await hass.async_block_till_done()
     assert er.async_get(hass).async_get(BUTTON) is None
     assert hass.states.get("button.guava_sam_sandbox_log_ibuprofen") is not None
+
+
+async def test_card_is_served_with_a_versioned_url(hass, aioclient_mock, entry):
+    api(aioclient_mock)
+    await load(hass, entry)
+    (paths,) = hass.http.async_register_static_paths.call_args.args
+    assert paths[0].url_path == "/guava_health/guava-dose-card.js"
+    assert Path(paths[0].path).is_file()
+    assert hass.data["test_add_js"].call_args.args[1].endswith("?v=" + VERSION)
+    manifest = json.loads((Path(paths[0].path).parents[1] / "manifest.json").read_text())
+    assert manifest["version"] == VERSION
 
 
 def test_resolve():

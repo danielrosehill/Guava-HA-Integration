@@ -32,3 +32,19 @@ log_medication:
       default: false
       selector:
         boolean:
+
+log_dose:
+  target:
+    entity:
+      integration: guava_health
+      domain: button
+  fields:
+    quantity:
+      default: 1
+      example: 2
+      selector:
+        number:
+          min: 0.001
+          max: 1000
+          step: any
+          mode: box

@@ -1,6 +1,7 @@
 """Shared fixtures. All names are fictional."""
 
 import time
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -30,8 +31,13 @@ def token(**extra):
 
 
 @pytest.fixture(autouse=True)
-def auto_enable(enable_custom_integrations):
-    yield
+def auto_enable(enable_custom_integrations, hass):
+    # The real http and frontend components aren't part of the test harness.
+    hass.config.components.update({"http", "frontend"})
+    hass.http = MagicMock(async_register_static_paths=AsyncMock())
+    with patch("custom_components.guava_health.add_extra_js_url") as add_js:
+        hass.data["test_add_js"] = add_js
+        yield
 
 
 @pytest.fixture

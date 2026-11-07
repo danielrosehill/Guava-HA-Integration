@@ -5,12 +5,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 import logging
+from pathlib import Path
 import time
 from typing import Any
 import uuid
 
 import voluptuous as vol
 
+from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
@@ -27,6 +30,7 @@ from homeassistant.util import dt as dt_util
 
 from .api import GuavaAuthError, GuavaClient, GuavaError, resolve_medication
 from .const import (
+    CARD_URL,
     CONF_CLIENT_ID,
     CONF_CLIENT_SECRET,
     CONF_COOLDOWN,
@@ -36,6 +40,7 @@ from .const import (
     DOMAIN,
     EVENT_DOSE_LOGGED,
     SERVICE_LOG_MEDICATION,
+    VERSION,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -206,7 +211,12 @@ async def _handle_log_medication(call: ServiceCall) -> None:
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Register the action once for all profiles."""
+    """Register the action and the dashboard card once for all profiles."""
+    card = Path(__file__).parent / "frontend" / "guava-dose-card.js"
+    await hass.http.async_register_static_paths(
+        [StaticPathConfig(CARD_URL, str(card), True)]
+    )
+    add_extra_js_url(hass, f"{CARD_URL}?v={VERSION}")
     hass.services.async_register(
         DOMAIN, SERVICE_LOG_MEDICATION, _handle_log_medication, schema=SERVICE_SCHEMA
     )
