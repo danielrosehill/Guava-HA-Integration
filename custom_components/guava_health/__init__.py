@@ -28,7 +28,13 @@ from homeassistant.helpers.storage import Store
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util import dt as dt_util
 
-from .api import GuavaAuthError, GuavaClient, GuavaError, resolve_medication
+from .api import (
+    GuavaAuthError,
+    GuavaClient,
+    GuavaError,
+    new_tag_url,
+    resolve_medication,
+)
 from .const import (
     CARD_URL,
     CONF_CLIENT_ID,
@@ -66,6 +72,26 @@ SERVICE_SCHEMA = vol.Schema(
 def token_store(hass: HomeAssistant, entry_id: str) -> Store[dict[str, Any]]:
     """Rotated tokens live here: config entries save with a delay, this saves at once."""
     return Store(hass, 1, f"{DOMAIN}.{entry_id}.token", private=True)
+
+
+async def tag_links(
+    hass: HomeAssistant, entry_id: str, names: list[str]
+) -> dict[str, str]:
+    """Return one Guava Tag URL per medication, keeping URLs already handed out.
+
+    A written tag can't be told apart from an unused link, so a medication that leaves the
+    list keeps its URL in the store and gets the same one if it comes back.
+    """
+    store: Store[dict[str, str]] = Store(hass, 1, f"{DOMAIN}.{entry_id}.tags")
+    saved = await store.async_load() or {}
+    size = len(saved)
+    links: dict[str, str] = {}
+    for name in names:
+        key = name.strip().casefold()
+        links.setdefault(name.strip(), saved.setdefault(key, new_tag_url()))
+    if len(saved) != size:
+        await store.async_save(saved)
+    return links
 
 
 @dataclass
@@ -256,3 +282,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: GuavaConfigEntry) -> bo
 
 async def async_remove_entry(hass: HomeAssistant, entry: GuavaConfigEntry) -> None:
     await token_store(hass, entry.entry_id).async_remove()
+    await Store(hass, 1, f"{DOMAIN}.{entry.entry_id}.tags").async_remove()

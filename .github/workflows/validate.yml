@@ -2,6 +2,8 @@ name: Validate
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "17 3 * * *"
   workflow_dispatch:
 jobs:
   hassfest:
@@ -15,5 +17,3 @@ jobs:
       - uses: hacs/action@main
         with:
           category: integration
-          # Brand assets are only needed for the default HACS store.
-          ignore: brands

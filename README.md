@@ -25,12 +25,14 @@ Dose logging is the point. It does not import health data into Home Assistant.
   by the cooldown, it shows the reason and keeps the quantity.
 - **Attributes:** each button has `last_logged` and `last_quantity`, covering only doses Guava
   accepted through this integration. The button's own state changes on every press, even a failed one.
+- **NFC tag links:** a link per medication to write to a blank tag, under the entry's **Configure**
+  ([how it works](docs/usage-ideas.md#nfc-tags)).
 - **Event:** `guava_health_dose_logged` after Guava accepts a dose, for confirmation lights or
   announcements, since a Zigbee button gives no feedback of its own.
 
 ## Install
 
-**HACS, as a custom repository.** It isn't in the default HACS store.
+**HACS, as a custom repository.** It isn't in the default HACS store yet.
 
 1. HACS → menu → **Custom repositories**.
 2. Add `https://github.com/danielrosehill/Guava-HA-Integration`, type **Integration**.
@@ -124,7 +126,8 @@ icon: mdi:pill          # optional
 | Pressing a button on a real install | Tested on live: Guava accepted the dose |
 | Dose card | Tested on live with Home Assistant 2026.11.0: a quantity of 2 appeared correctly in Guava's web app. The refused-dose message was only tried against a stubbed call |
 | Loading on a real install | Tested on Home Assistant 2026.11.0: loads, and the setup form opens |
-| HACS validation | Passes as a custom repository; the brands check is skipped, so it isn't ready for the default store |
+| NFC tag links page | Tested with a mocked API under Home Assistant 2026.2.3. Not yet opened on a real install. A random 12-character id bringing up Guava's tag setup was tested by hand on 2026-11-03 |
+| HACS validation | Passes with no checks skipped |
 
 ## Related projects
 

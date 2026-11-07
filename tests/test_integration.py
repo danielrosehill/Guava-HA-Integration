@@ -3,6 +3,7 @@
 from datetime import datetime
 import json
 from pathlib import Path
+import re
 import time
 from urllib.parse import urlencode
 
@@ -22,8 +23,8 @@ ACCEPTED = {"accepted": 1, "environment": "test"}
 BUTTON = "button.guava_sam_sandbox_log_paracetamol"
 
 
-def api(mock, write=ACCEPTED):
-    mock.get(f"{BASE}/fhir/R4/MedicationRequest", json=MEDS)
+def api(mock, write=ACCEPTED, meds=MEDS):
+    mock.get(f"{BASE}/fhir/R4/MedicationRequest", json=meds)
     mock.get(f"{BASE}/v1/me", json=ME)
     mock.post(f"{BASE}/v1/data-entries", json=write)
 
@@ -293,6 +294,10 @@ async def test_options_remove_button(hass, aioclient_mock, entry):
     await load(hass, entry)
     assert er.async_get(hass).async_get(BUTTON)
     result = await hass.config_entries.options.async_init(entry.entry_id)
+    assert result["type"] is FlowResultType.MENU
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {"next_step_id": "buttons"}
+    )
     result = await hass.config_entries.options.async_configure(
         result["flow_id"], {"medications": ["Ibuprofen"], "cooldown_seconds": 30}
     )
@@ -300,6 +305,44 @@ async def test_options_remove_button(hass, aioclient_mock, entry):
     await hass.async_block_till_done()
     assert er.async_get(hass).async_get(BUTTON) is None
     assert hass.states.get("button.guava_sam_sandbox_log_ibuprofen") is not None
+
+
+async def open_tag_links(hass, entry):
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    return await hass.config_entries.options.async_configure(
+        result["flow_id"], {"next_step_id": "tag_links"}
+    )
+
+
+async def test_tag_links_list_each_medication_and_stay_the_same(
+    hass, aioclient_mock, entry
+):
+    api(aioclient_mock)
+    await load(hass, entry)
+    before = aioclient_mock.call_count
+    first = await open_tag_links(hass, entry)
+    links = first["description_placeholders"]["links"]
+    found = re.findall(r"^- (.+): `https://guavahealth\.com/nfc/([A-Za-z0-9]{12})`$", links, re.M)
+    assert [name for name, _ in found] == ["Paracetamol", "Ibuprofen"]
+    assert len({tag for _, tag in found}) == 2
+    assert "Old Med" not in links
+
+    done = await hass.config_entries.options.async_configure(first["flow_id"], {})
+    assert done["type"] is FlowResultType.CREATE_ENTRY
+    assert entry.options == {"medications": ["Paracetamol "], "cooldown_seconds": 60}
+
+    again = await open_tag_links(hass, entry)
+    assert again["description_placeholders"]["links"] == links
+    # Reading the list is all this page does: nothing is written to Guava.
+    assert all(call[0] == "GET" for call in aioclient_mock.mock_calls[before:])
+
+
+async def test_tag_links_with_no_medications(hass, aioclient_mock, entry):
+    api(aioclient_mock, meds={"resourceType": "Bundle", "entry": []})
+    hass.config_entries.async_update_entry(entry, options={"medications": []})
+    await load(hass, entry)
+    result = await open_tag_links(hass, entry)
+    assert result["description_placeholders"]["links"] == "No active medications."
 
 
 async def test_card_is_served_with_a_versioned_url(hass, aioclient_mock, entry):

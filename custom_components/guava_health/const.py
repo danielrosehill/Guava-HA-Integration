@@ -1,7 +1,7 @@
 """Constants for the Guava Health integration."""
 
 DOMAIN = "guava_health"
-VERSION = "1.2"
+VERSION = "1.3"
 
 API_BASE = {
     "live": "https://api.guavahealth.com",
@@ -9,6 +9,9 @@ API_BASE = {
 }
 AUTHORIZE_URL = "https://guavahealth.com/oauth/authorize"
 DEFAULT_REDIRECT_URI = "https://localhost:8765/callback"
+# A Guava Tag is this plus an id belonging to the tag, not to a medication. What it logs is
+# chosen in Guava on first tap (tested 2026-11-03).
+TAG_URL = "https://guavahealth.com/nfc/"
 
 # Cloudflare answers 403 (error 1010) to default Python agents (tested 2026-11-03).
 USER_AGENT = (

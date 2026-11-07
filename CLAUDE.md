@@ -2,7 +2,7 @@
 
 Public, unofficial Home Assistant custom integration (`custom_components/guava_health`) for logging
 doses to Guava Health. Not a Guava product: keep the notice at the top of README.md, and never word
-anything as if Guava made, endorses or supports it. Installable through HACS as a custom repository (`hacs.json`); not in the default store (2026-11-07).
+anything as if Guava made, endorses or supports it. Installable through HACS as a custom repository (`hacs.json`); not in the default store (2026-11-07). The icon in `custom_components/guava_health/brand/` is original: never swap in Guava's logo or a Home Assistant one.
 
 Release tier: small (`v1.0`, `v1.1`, ...). Keep `manifest.json` `version` and `VERSION` in `const.py` in step; `VERSION` also busts the card's browser cache.
 
@@ -26,6 +26,7 @@ Release tier: small (`v1.0`, `v1.1`, ...). Keep `manifest.json` `version` and `V
   and a reauth flow can sit unopened for hours.
 - `api.py` has no Home Assistant imports.
 - Quantity is chosen on the card, starting at 1. Guava's dose text is free text, mostly strength (`20mg`), so it must never be parsed into a quantity (checked on live 2026-11-07).
+- NFC tag links (Configure → Links for NFC tags) are generated here, one per medication, and kept in a `Store` per entry so they never change. They can't be discovered: `guavahealth.com/nfc/<id>` identifies the tag, what it logs is set in Guava on first tap, and `docs/api-notes.md` lists no tag endpoint (2026-11-07). Don't add Home Assistant's `tag` integration to this route: the tag already goes straight to Guava.
 - `guava-dose-card` ships inside the integration, so it works without HACS. It calls `guava_health.log_dose` and waits for the call, so its tick means Guava accepted the dose. Don't make it fire and forget.
 
 ## Test

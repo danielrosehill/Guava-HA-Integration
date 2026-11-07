@@ -33,7 +33,7 @@ from homeassistant.helpers.selector import (
     TextSelectorType,
 )
 
-from . import token_store
+from . import tag_links, token_store
 from .api import (
     GuavaClient,
     GuavaError,
@@ -267,9 +267,24 @@ class GuavaConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class GuavaOptionsFlow(OptionsFlow):
-    """Change the buttons and the cooldown."""
+    """Change the buttons and the cooldown, or show the links for Guava Tags."""
+
+    async def _medication_names(self) -> list[str]:
+        """Return the chosen medications and the active ones, as fresh as Guava allows."""
+        profile = self.config_entry.runtime_data
+        try:
+            await profile.refresh_known()
+        except GuavaError as err:
+            _LOGGER.warning("Could not refresh the medication list: %s", err)
+        chosen = self.config_entry.options.get(CONF_MEDICATIONS, [])
+        return list(dict.fromkeys([*chosen, *profile.known_medications]))
 
     async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        return self.async_show_menu(step_id="init", menu_options=["buttons", "tag_links"])
+
+    async def async_step_buttons(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         options = self.config_entry.options
@@ -281,18 +296,33 @@ class GuavaOptionsFlow(OptionsFlow):
                 }
             )
         chosen = options.get(CONF_MEDICATIONS, [])
-        profile = self.config_entry.runtime_data
-        try:
-            await profile.refresh_known()
-        except GuavaError as err:
-            _LOGGER.warning("Could not refresh the medication list: %s", err)
-        names = list(dict.fromkeys([*chosen, *profile.known_medications]))
         schema = vol.Schema(
             {
-                vol.Optional(CONF_MEDICATIONS, default=chosen): _medication_field(names),
+                vol.Optional(CONF_MEDICATIONS, default=chosen): _medication_field(
+                    await self._medication_names()
+                ),
                 vol.Required(
                     CONF_COOLDOWN, default=options.get(CONF_COOLDOWN, DEFAULT_COOLDOWN)
                 ): _cooldown_field(),
             }
         )
-        return self.async_show_form(step_id="init", data_schema=schema)
+        return self.async_show_form(step_id="buttons", data_schema=schema)
+
+    async def async_step_tag_links(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Show the links. Nothing to change, so submitting leaves the options as they are."""
+        if user_input is not None:
+            return self.async_create_entry(data=dict(self.config_entry.options))
+        links = await tag_links(
+            self.hass, self.config_entry.entry_id, await self._medication_names()
+        )
+        return self.async_show_form(
+            step_id="tag_links",
+            data_schema=vol.Schema({}),
+            description_placeholders={
+                "person": self.config_entry.title,
+                "links": "\n".join(f"- {name}: `{url}`" for name, url in links.items())
+                or "No active medications.",
+            },
+        )

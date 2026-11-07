@@ -44,11 +44,22 @@
   "options": {
     "step": {
       "init": {
+        "title": "Guava Health",
+        "menu_options": {
+          "buttons": "Buttons and cooldown",
+          "tag_links": "Links for NFC tags"
+        }
+      },
+      "buttons": {
         "title": "Buttons and cooldown",
         "data": {
           "medications": "Medications",
           "cooldown_seconds": "Cooldown"
         }
+      },
+      "tag_links": {
+        "title": "NFC tag links for {person}",
+        "description": "Each link is for one blank NFC tag.\n\n{links}\n\n1. Write the link to the tag as a URL record. For Android, add an Application record `com.guavahealth.app` so that it opens the Guava app.\n2. Tap the tag on a phone signed in to Guava.\n3. In Guava's setup, choose {person} and the medication named here. Guava stores that choice, so this page can't check it.\n\nThese tags log through the Guava app, not Home Assistant: the cooldown doesn't apply and no Home Assistant event fires."
       }
     }
   },

@@ -13,13 +13,14 @@ from dataclasses import dataclass
 import hashlib
 import json
 import secrets
+import string
 import time
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit
 
 import aiohttp
 
-from .const import API_BASE, AUTHORIZE_URL, SCOPES, USER_AGENT
+from .const import API_BASE, AUTHORIZE_URL, SCOPES, TAG_URL, USER_AGENT
 
 REFRESH_MARGIN = 120
 MAX_FHIR_PAGES = 20
@@ -150,6 +151,12 @@ async def finish_authorization(
     )
     token["obtained_at"] = time.time()
     return token
+
+
+def new_tag_url() -> str:
+    """Return a new Guava Tag URL. Ids on Guava's own tags are 12 characters too."""
+    alphabet = string.ascii_letters + string.digits
+    return TAG_URL + "".join(secrets.choice(alphabet) for _ in range(12))
 
 
 def resolve_medication(name: str, known: list[str]) -> str | None:
