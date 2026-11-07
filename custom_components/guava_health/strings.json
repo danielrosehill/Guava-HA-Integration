@@ -1,0 +1,91 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Guava API app",
+        "description": "This integration is unofficial and is not made or supported by Guava. Enter the key of your own Guava API app (see the README). A test key reaches Guava's sandbox patient; a live key reaches real profiles. Add this integration once per person.",
+        "data": {
+          "client_id": "Client ID",
+          "client_secret": "Client secret",
+          "redirect_uri": "Redirect URI (exactly as on the app)"
+        }
+      },
+      "authorize": {
+        "title": "Authorise in Guava",
+        "description": "1. [Open the Guava consent page]({url}). The link lasts 10 minutes.\n2. Choose the person on the consent screen and approve.\n3. The browser lands on a page that fails to load. That is expected.\n4. Copy the full address from the address bar and paste it below.",
+        "data": {
+          "callback_url": "Address the browser landed on"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Authorise {person} again",
+        "description": "Guava no longer accepts this grant, so doses for {person} can't be logged. Continue to get a new consent link, and choose the same person on the consent screen."
+      },
+      "medications": {
+        "title": "Buttons for {person}",
+        "description": "Each chosen medication gets a button that logs one dose. Presses of the same medication inside the cooldown are ignored, because the API cannot delete a dose.",
+        "data": {
+          "medications": "Medications",
+          "cooldown_seconds": "Cooldown"
+        }
+      }
+    },
+    "error": {
+      "par_failed": "Guava rejected the request. Check the key, the redirect URI and that the app has the required scopes.",
+      "authorization_failed": "That address did not work, or the link expired. Use the new link above."
+    },
+    "abort": {
+      "already_configured": "This person is already set up.",
+      "cannot_connect": "Could not reach Guava.",
+      "reauth_successful": "Guava is authorised again.",
+      "wrong_profile": "That grant is for a different person. Choose the same person on the consent screen."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Buttons and cooldown",
+        "data": {
+          "medications": "Medications",
+          "cooldown_seconds": "Cooldown"
+        }
+      }
+    }
+  },
+  "services": {
+    "log_medication": {
+      "name": "Log medication",
+      "description": "Logs a dose to Guava. Only the Guava app can delete it.",
+      "fields": {
+        "medication": {
+          "name": "Medication",
+          "description": "Name of an active medication. Case and surrounding spaces are ignored."
+        },
+        "config_entry_id": {
+          "name": "Person",
+          "description": "Required when more than one person is set up."
+        },
+        "quantity": {
+          "name": "Quantity",
+          "description": "Defaults to 1 on Guava's side."
+        },
+        "notes": {
+          "name": "Notes",
+          "description": "Stored on the dose."
+        },
+        "time": {
+          "name": "Time",
+          "description": "When it was taken. Defaults to now."
+        },
+        "bypass_cooldown": {
+          "name": "Bypass cooldown",
+          "description": "Log even if the same medication was logged within the cooldown."
+        },
+        "allow_new": {
+          "name": "Allow new medication",
+          "description": "Create the medication in Guava if the name is unknown. The API cannot remove it afterwards."
+        }
+      }
+    }
+  }
+}

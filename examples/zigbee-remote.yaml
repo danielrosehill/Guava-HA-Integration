@@ -1,0 +1,21 @@
+# One click per medication on a Zigbee2MQTT remote. Change the topic and action values
+# to what your remote sends. With more than one person, add config_entry_id to data
+# (the action's Person field in the UI fills it in).
+alias: Dose remote
+mode: queued
+triggers:
+  - trigger: mqtt
+    topic: zigbee2mqtt/Med Remote/action
+actions:
+  - choose:
+      - conditions: "{{ trigger.payload == '1_single' }}"
+        sequence:
+          - action: guava_health.log_medication
+            data:
+              medication: Paracetamol
+      - conditions: "{{ trigger.payload == '2_single' }}"
+        sequence:
+          - action: guava_health.log_medication
+            data:
+              medication: Ibuprofen
+              quantity: 2

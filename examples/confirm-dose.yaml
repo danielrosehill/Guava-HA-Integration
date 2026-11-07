@@ -1,0 +1,10 @@
+# Feedback for buttons that have none. Replace the notify action with a light flash or
+# a spoken announcement if you prefer.
+alias: Confirm dose logged
+triggers:
+  - trigger: event
+    event_type: guava_health_dose_logged
+actions:
+  - action: notify.notify
+    data:
+      message: "Logged {{ trigger.event.data.medication }} for {{ trigger.event.data.profile }}"

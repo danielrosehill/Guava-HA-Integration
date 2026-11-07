@@ -1,0 +1,12 @@
+{
+  "domain": "guava_health",
+  "name": "Guava Health (unofficial)",
+  "codeowners": ["@danielrosehill"],
+  "config_flow": true,
+  "documentation": "https://github.com/danielrosehill/Guava-HA-Integration",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/danielrosehill/Guava-HA-Integration/issues",
+  "requirements": [],
+  "version": "1.0"
+}

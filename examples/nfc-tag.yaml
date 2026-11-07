@@ -1,0 +1,9 @@
+# A Home Assistant tag (scanned with the companion app), not a Guava tag.
+alias: Dose tag
+triggers:
+  - trigger: tag
+    tag_id: REPLACE-WITH-TAG-ID
+actions:
+  - action: guava_health.log_medication
+    data:
+      medication: Paracetamol

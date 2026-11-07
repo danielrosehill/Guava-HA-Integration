@@ -1,0 +1,13 @@
+# "Guava, log my paracetamol". An unknown name makes the action fail instead of creating
+# a medication; allow_new is deliberately left off.
+alias: Voice dose log
+triggers:
+  - trigger: conversation
+    command:
+      - "[guava] log my {medication}"
+      - "I took my {medication}"
+actions:
+  - action: guava_health.log_medication
+    data:
+      medication: "{{ trigger.slots.medication }}"
+  - set_conversation_response: "Logged {{ trigger.slots.medication }}"

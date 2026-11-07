@@ -1,0 +1,34 @@
+log_medication:
+  fields:
+    medication:
+      required: true
+      example: Paracetamol
+      selector:
+        text:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: guava_health
+    quantity:
+      example: 1
+      selector:
+        number:
+          min: 0.001
+          max: 1000
+          step: any
+          mode: box
+    notes:
+      selector:
+        text:
+          multiline: true
+    time:
+      selector:
+        datetime:
+    bypass_cooldown:
+      default: false
+      selector:
+        boolean:
+    allow_new:
+      default: false
+      selector:
+        boolean:
