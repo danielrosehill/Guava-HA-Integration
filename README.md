@@ -9,6 +9,8 @@ a voice satellite into a dose logger. One entry per person, so a parent can log 
 
 Dose logging is the point. It does not import health data into Home Assistant.
 
+![Choosing which medications get buttons during setup](docs/images/choose-medications.png)
+
 ## What you get
 
 - **Buttons:** `button.guava_<person>_log_<medication>`, one per medication you choose. Each press
@@ -71,7 +73,8 @@ person on the consent screen. The buttons and cooldown can be changed later unde
 |---|---|
 | Config flow, reauth, buttons, action, cooldown, token rotation | Tested with a mocked API under Home Assistant 2026.2.3 (`tests/`) |
 | Authorisation request (`/oauth/par`) with this client | Tested against Guava's sandbox |
-| Consent, token exchange and dose write through this integration | **Not tested yet** |
+| Live consent, token exchange and medication list through this integration | Tested on Home Assistant 2026.11.0 |
+| Dose write through this integration | **Not tested yet** |
 | Loading on a real install | Tested on Home Assistant 2026.11.0: loads, and the setup form opens |
 | HACS validation | Passes as a custom repository; the brands check is skipped, so it isn't ready for the default store |
 

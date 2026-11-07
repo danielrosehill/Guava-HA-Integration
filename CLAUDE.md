@@ -9,7 +9,7 @@ Release tier: small (`v1.0`, `v1.1`, ...). Keep `manifest.json` `version` and `U
 ## Hard rules
 
 1. **No personal data.** No client ids, secrets, tokens, profile or patient ids, real family names,
-   or medication names from a real account. Use Paracetamol and Ibuprofen in examples and tests.
+   or medication names from a real account. Use Paracetamol and Ibuprofen in examples and tests. Exception: `docs/images/choose-medications.png` shows the owner's name and medications, published at the owner's request (2026-11-07).
 2. **Dated facts.** Statements about Guava's API carry the date observed, and say tested or confirmed.
    The reference is `docs/api-notes.md` in Guava-Health-Plugin; add new API findings there, not here.
 3. **Writes are permanent from here.** The API can't delete a dose. Never add automatic retries on
