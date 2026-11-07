@@ -20,10 +20,13 @@ Dose logging is the point. It does not import health data into Home Assistant.
 
 ## Install
 
-Manual only. It's not in HACS for now.
+**HACS, as a custom repository.** It isn't in the default HACS store.
 
-1. Copy `custom_components/guava_health` into your Home Assistant `config/custom_components/`.
-2. Restart Home Assistant.
+1. HACS → menu → **Custom repositories**.
+2. Add `https://github.com/danielrosehill/Guava-HA-Integration`, type **Integration**.
+3. Download **Guava Health (unofficial)**, then restart Home Assistant.
+
+**Manually:** copy `custom_components/guava_health` into `config/custom_components/` and restart.
 
 ## Set up
 

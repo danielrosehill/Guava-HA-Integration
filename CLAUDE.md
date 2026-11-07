@@ -2,7 +2,7 @@
 
 Public, unofficial Home Assistant custom integration (`custom_components/guava_health`) for logging
 doses to Guava Health. Not a Guava product: keep the notice at the top of README.md, and never word
-anything as if Guava made, endorses or supports it. Not in HACS, by the owner's choice (2026-11-07).
+anything as if Guava made, endorses or supports it. Installable through HACS as a custom repository (`hacs.json`); not in the default store (2026-11-07).
 
 Release tier: small (`v1.0`, `v1.1`, ...). Keep `manifest.json` `version` and `USER_AGENT` in `const.py` in step.
 
