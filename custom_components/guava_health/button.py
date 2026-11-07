@@ -46,7 +46,8 @@ class GuavaDoseButton(ButtonEntity):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=f"Guava {entry.title}",
-            manufacturer="Unofficial integration",
+            manufacturer="Guava Health (unofficial)",
+            model="Medication dose logger",
             entry_type=DeviceEntryType.SERVICE,
         )
 

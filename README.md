@@ -37,11 +37,24 @@ Dose logging is the point. It does not import health data into Home Assistant.
 2. **Settings → Devices & services → Add integration → Guava Health (unofficial).**
 3. Enter the client id and secret. Keep the default redirect URI if the app uses it.
 4. Open the consent link, choose the person and approve. The browser lands on a `localhost` page
-   that fails to load. That's expected: copy the whole address and paste it back within 10 minutes.
+   that fails to load. That's expected: copy the URL from the address bar and paste it into the form
+   within 10 minutes. It doesn't matter how you reach Home Assistant, because Guava never contacts it.
 5. Choose which medications get buttons, and the cooldown.
 
-**A second person:** add the integration again. The key is prefilled, and you choose the other
-person on the consent screen. The buttons and cooldown can be changed later under **Configure**.
+The buttons and cooldown can be changed later under **Configure**.
+
+### One entry per person
+
+Guava grants access per person, so each patient needs their own authorisation and their own entry
+under this integration. A second person doesn't need a second app, key or install:
+
+1. Add the integration again. The key is prefilled.
+2. On Guava's consent screen, choose the other person. A family-plan dependent appears there.
+3. Choose that person's medications.
+
+Each person gets their own device and buttons. With more than one person, `log_medication` needs
+`config_entry_id` to say whose dose it is; the action's **Person** field fills it in. Authorising the
+same person twice is refused.
 
 ## Behaviour worth knowing
 

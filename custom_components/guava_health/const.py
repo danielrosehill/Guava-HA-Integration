@@ -11,7 +11,7 @@ DEFAULT_REDIRECT_URI = "https://localhost:8765/callback"
 
 # Cloudflare answers 403 (error 1010) to default Python agents (tested 2026-11-03).
 USER_AGENT = (
-    "guava-ha-integration/1.0 (+https://github.com/danielrosehill/Guava-HA-Integration)"
+    "guava-ha-integration/1.1 (+https://github.com/danielrosehill/Guava-HA-Integration)"
 )
 
 # Only what the integration uses. The app may have more enabled; `profile` is added by

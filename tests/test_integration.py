@@ -168,6 +168,38 @@ async def test_two_profiles_need_a_target(hass, aioclient_mock, entry):
     assert len(writes(aioclient_mock)) == 1
 
 
+async def _second_person(hass, aioclient_mock, person):
+    aioclient_mock.post(f"{BASE}/oauth/par", json={"request_uri": "urn:x", "expires_in": 600})
+    aioclient_mock.post(f"{BASE}/oauth/token", json=token())
+    aioclient_mock.get(f"{BASE}/v1/me", json={"profile": {"id": person, "given_name": "Kid"}})
+    aioclient_mock.get(f"{BASE}/fhir/R4/MedicationRequest", json=MEDS)
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    fields = {str(k): k.default() for k in result["data_schema"].schema}
+    assert fields["client_id"] == "guava_test_client_x"
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], fields)
+    state = hass.config_entries.flow._progress[result["flow_id"]]._pending.state
+    query = urlencode({"code": "c", "state": state})
+    return await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"callback_url": f"https://localhost:8765/callback?{query}"}
+    )
+
+
+async def test_second_person_reuses_key(hass, aioclient_mock, entry):
+    result = await _second_person(hass, aioclient_mock, "p2")
+    assert result["step_id"] == "medications"
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"medications": ["Ibuprofen"], "cooldown_seconds": 60}
+    )
+    assert result["result"].unique_id == "test:p2"
+
+
+async def test_same_person_twice_is_refused(hass, aioclient_mock, entry):
+    result = await _second_person(hass, aioclient_mock, "p1")
+    assert result["reason"] == "already_configured"
+
+
 async def test_refresh_rotates_and_is_saved_before_use(hass, aioclient_mock, entry, hass_storage):
     api(aioclient_mock)
     aioclient_mock.post(

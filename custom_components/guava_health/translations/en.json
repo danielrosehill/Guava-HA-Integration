@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Guava API app",
-        "description": "This integration is unofficial and is not made or supported by Guava. Enter the key of your own Guava API app (see the README). A test key reaches Guava's sandbox patient; a live key reaches real profiles. Add this integration once per person.",
+        "description": "This integration is unofficial and is not made or supported by Guava. Enter the key of your own Guava API app (see the README). A test key reaches Guava's sandbox patient; a live key reaches real profiles. Each person is a separate entry: add this integration once for each.",
         "data": {
           "client_id": "Client ID",
           "client_secret": "Client secret",
@@ -12,9 +12,9 @@
       },
       "authorize": {
         "title": "Authorise in Guava",
-        "description": "1. [Open the Guava consent page]({url}). The link lasts 10 minutes.\n2. Choose the person on the consent screen and approve.\n3. The browser lands on a page that fails to load. That is expected.\n4. Copy the full address from the address bar and paste it below.",
+        "description": "1. [Open the Guava consent page]({url}). The link lasts 10 minutes.\n2. Choose the person on the consent screen and approve.\n3. The browser lands on a page that fails to load. That is expected.\n4. Copy the URL from your browser's address bar and paste it below.",
         "data": {
-          "callback_url": "Address the browser landed on"
+          "callback_url": "URL from the address bar"
         }
       },
       "reauth_confirm": {
@@ -32,7 +32,7 @@
     },
     "error": {
       "par_failed": "Guava rejected the request. Check the key, the redirect URI and that the app has the required scopes.",
-      "authorization_failed": "That address did not work, or the link expired. Use the new link above."
+      "authorization_failed": "That URL did not work, or the link expired. Use the new link above."
     },
     "abort": {
       "already_configured": "This person is already set up.",
