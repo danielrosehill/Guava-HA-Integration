@@ -52,6 +52,10 @@ under this integration. A second person doesn't need a second app, key or instal
 2. On Guava's consent screen, choose the other person. A family-plan dependent appears there.
 3. Choose that person's medications.
 
+![Guava's consent screen with the profile picker open](docs/images/consent-choose-person.png)
+
+*Guava's consent screen, 2026-11-07. The names and email are replaced with fictional ones.*
+
 Each person gets their own device and buttons. With more than one person, `log_medication` needs
 `config_entry_id` to say whose dose it is; the action's **Person** field fills it in. Authorising the
 same person twice is refused.
