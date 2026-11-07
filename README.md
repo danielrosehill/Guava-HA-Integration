@@ -93,6 +93,10 @@ same person twice is refused.
 
 *A dashboard with fictional names and medications, one card showing the confirmation.*
 
+| Choose a quantity | Confirmed |
+|---|---|
+| ![The dose card with a quantity of 2](docs/images/card-quantity.png) | ![The dose card after Guava accepted the dose](docs/images/card-confirmed.png) |
+
 ```yaml
 type: custom:guava-dose-card
 entity: button.guava_sam_log_paracetamol
