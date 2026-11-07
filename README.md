@@ -91,7 +91,8 @@ same person twice is refused.
 | Config flow, reauth, buttons, action, cooldown, token rotation | Tested with a mocked API under Home Assistant 2026.2.3 (`tests/`) |
 | Authorisation request (`/oauth/par`) with this client | Tested against Guava's sandbox |
 | Live consent, token exchange and medication list through this integration | Tested on Home Assistant 2026.11.0 |
-| Dose write through this integration | **Not tested yet** |
+| Dose write through this integration | Tested on live through the action, for a holder and a dependent: the new medication appeared in Guava's list |
+| Pressing a button on a real install | **Not tested yet** |
 | Loading on a real install | Tested on Home Assistant 2026.11.0: loads, and the setup form opens |
 | HACS validation | Passes as a custom repository; the brands check is skipped, so it isn't ready for the default store |
 
