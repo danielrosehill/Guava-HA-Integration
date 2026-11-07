@@ -89,6 +89,10 @@ same person twice is refused.
 
 ## Dashboard card
 
+![A dashboard with a section per person, using the dose card](docs/images/dashboard.png)
+
+*A dashboard with fictional names and medications, one card showing the confirmation.*
+
 ```yaml
 type: custom:guava-dose-card
 entity: button.guava_sam_log_paracetamol
