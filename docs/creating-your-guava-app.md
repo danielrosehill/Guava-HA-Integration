@@ -47,9 +47,14 @@ you can delete it afterwards. The same steps can be run with `guava auth` from t
 ## 3. Get a live key
 
 1. Open the app, then **Submit for production approval**. Personal apps were approved instantly
-   (2026-11-03).
-2. **Create live key**, and store the id and secret.
-3. Add the integration again with the live key, once per person.
+   (2026-11-03 and 2026-11-07).
+2. Guava emails you from `accounts@guavahealth.com` with the subject "Guava API app approved"
+   (seen 2026-11-07). Its **Create production keys** button leads to the next step.
+
+   ![The approval email from Guava](images/app-approved-email.png)
+
+3. **Create live key**, and store the id and secret.
+4. Add the integration again with the live key, once per person.
 
 The host follows the key: ids starting `guava_test_` use `api-test.guavahealth.com`, others use
 `api.guavahealth.com`. A test key on live gets `invalid_client`.
